@@ -3,6 +3,10 @@
 
 A lightweight, minimalistic i3 window manager setup for a clean and efficient workspace.
 
+<img width="1919" height="1079" alt="ksnip_222" src="https://github.com/user-attachments/assets/7bde0db2-04dc-496e-bd1b-00d11cd3d69f" />
+
+<img width="1919" height="1079" alt="ksnip_20250711-170406" src="https://github.com/user-attachments/assets/9291bc84-b762-4989-92d8-2d5ab793d53a" />
+
 ---
 
 ## Table of Contents
