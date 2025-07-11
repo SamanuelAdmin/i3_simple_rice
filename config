@@ -1,0 +1,197 @@
+set $mod Mod1
+
+# commands binds
+set $screenshot ksnip
+set $terminal alacritty
+set $program_menu "rofi -modi drun,run -show drun"
+set $browser firefox
+set $file_manager "alacritty -e ranger"
+set $wifi_network_manager "alacritty -e impala"
+set $logout_menu "archlinux-logout"
+set $bluetooth "alacritty -e dmenu-bluetooth"
+set $lockscreen "i3lock -c 000000 -k -f -e -t"
+
+# system binds
+set $config_display "xrandr --output eDP-1 --mode 1920x1080"
+
+set $change_kb_layout_btn "grp:caps_toggle"
+set $kb_layouts "us,ru"
+
+# utils binds
+set $volume_up ~/.config/i3/utils/volume.sh up
+set $volume_down ~/.config/i3/utils/volume.sh down
+set $volume_mute ~/.config/i3/utils/volume.sh mute
+set $brightness_up sudo ~/.config/i3/utils/brightness.py up
+set $brightness_down sudo ~/.config/i3/utils/brightness.py down
+set $kb_light_switch sudo ~/.config/i3/utils/led_util/light_controller.py /sys/class/leds/tpacpi::kbd_backlight switch
+
+# IDE`s
+set $PyCharm "/home/mainadmin/pycharm/bin/pycharm.sh"
+set $IntellijIdea "intellij-idea-ultimate"
+set $SublimeText "subl"
+
+
+# applications gaps (visual)
+gaps inner 10
+gaps outer 3
+# fonts
+font pango:monospace 14
+# borders
+for_window [class="^.*"] border pixel 0
+default_border pixel 1
+default_floating_border pixel 1
+
+
+# startup configs
+exec --no-startup-id dex --autostart --environment i3
+exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
+exec --no-startup-id nm-applet
+exec --no-startup-id dhcpcd
+exec --no-startup-id dunst
+exec --no-startup-id pulseaudio --start
+exec_always autotiling -w 1 2 3 4
+exec_always $config_display
+exec_always --no-startup-id setxkbmap -layout $kb_layouts -option $change_kb_layout_btn
+exec_always killall polybar
+exec_always sleep 1 && polybar -c ~/.config/i3/polybar/config.ini
+
+# Set up background image
+exec --no-startup-id "feh --bg-scale /home/user/pictures/wallpapers/onedark.png"
+
+# Use pactl to adjust volume in PulseAudio.
+set $refresh_i3status killall -SIGUSR1 i3status
+bindsym XF86AudioRaiseVolume exec --no-startup-id $volume_up && $refrech_i3status
+bindsym XF86AudioLowerVolume exec --no-startup-id $volume_down && $refresh_i3status
+bindsym XF86AudioMute exec --no-startup-id $volume_mute && $refresh_i3status
+bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
+
+# Control display brightness
+bindsym XF86MonBrightnessUp exec --no-startup-id $brightness_up
+bindsym XF86MonBrightnessDown exec --no-startup-id $brightness_down
+
+# Control LED (ex keyboard)
+bindsym XF86Favorites exec --no-startup-id $kb_light_switch 
+
+# Bluetooth control
+bindsym XF86Bluetooth exec --no-startup-id $bluetooth
+
+# move tiling windows via drag & drop by left-clicking into the title bar,
+# or left-clicking anywhere into the window while holding the floating modifier.
+tiling_drag modifier titlebar
+
+
+# Workspaces
+bindsym $mod+1 workspace 1
+bindsym $mod+2 workspace 2
+bindsym $mod+3 workspace 3
+bindsym $mod+4 workspace 4
+
+# moving windows to another workspaces
+bindsym $mod+Shift+1 move container to workspace 1
+bindsym $mod+Shift+2 move container to workspace 2
+bindsym $mod+Shift+3 move container to workspace 3
+bindsym $mod+Shift+4 move container to workspace 4
+
+
+
+# OPEN PROGRAMS 
+bindsym $mod+p exec $ide
+bindsym Print exec $screenshot
+bindsym $mod+d exec --no-startup-id $program_menu
+bindsym $mod+Return exec $terminal
+bindsym $mod+n exec $wifi_network_manager
+bindsym $mod+b exec $browser
+bindsym $mod+e exec $file_manager
+bindsym $mod+q kill
+bindsym $mod+Shift+q exec $logout_menu
+bindsym $mod+Shift+e exec $lockscreen
+
+
+# FOCUS
+
+# change focus
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
+bindsym $mod+h focus left
+
+# alternatively, you can use the cursor keys:
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+# move focused window
+bindsym $mod+Shift+j move down
+bindsym $mod+Shift+k move up
+bindsym $mod+Shift+l move right
+bindsym $mod+Shift+h move left
+
+# alternatively, you can use the cursor keys:
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+
+# RESIZE MODE
+
+mode "resize" {
+        #bindsym j resize shrink width 10 px or 10 ppt
+        #bindsym k resize grow height 10 px or 10 ppt
+        #bindsym l resize shrink height 10 px or 10 ppt
+        #bindsym h resize grow width 10 px or 10 ppt
+
+        bindsym Left resize shrink width 10 px
+        bindsym Down resize grow height 10 px
+        bindsym Up resize shrink height 10 px
+        bindsym Right resize grow width 10 px
+
+        # back to normal: Enter or Escape or $mod+r
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+        bindsym $mod+r mode "default"
+}
+
+mode "IDEmode" {
+        bindsym p exec $PyCharm
+        bindsym i exec $IntellijIdea
+        bindsym s exec $SublimeText
+
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+        bindsym $mod+i mode "default"
+}
+
+
+# resize mode
+bindsym $mod+r mode "resize"
+
+# choosing IDE mode
+bindsym $mod+i mode "IDEmode"
+
+
+# enter fullscreen mode for the focused container
+bindsym $mod+f fullscreen toggle
+
+# toggle tiling / floating
+bindsym $mod+Shift+space floating toggle
+
+# change focus between tiling / floating windows
+bindsym $mod+space focus mode_toggle
+
+# Use Mouse+$mod to drag floating windows to their wanted position
+floating_modifier $mod
+
+
+
+# i3 HOTKEYS
+
+# reload the configuration file
+bindsym $mod+Shift+c reload
+
+# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
+bindsym $mod+Shift+r restart
+
+# exit i3 (logs you out of your X session)
+# bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
