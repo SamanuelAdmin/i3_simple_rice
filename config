@@ -1,7 +1,7 @@
 set $mod Mod1
 
 # commands binds
-set $screenshot ksnip
+set $screenshot "scrot -s -f -p -o '/tmp/sect_screenshot_by_scrot.png' -e 'xclip -selection clipboard -target image/png -i /tmp/sect_screenshot_by_scrot.png'"
 set $terminal alacritty
 set $program_menu "rofi -modi drun,run -show drun"
 set $browser firefox
